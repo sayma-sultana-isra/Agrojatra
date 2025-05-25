@@ -1,17 +1,44 @@
-import express from "express";
-import dotenv from "dotenv";
+// server.js
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import User from './models/user.js'; // Make sure this matches your filename (lowercase)
+
 dotenv.config();
 
-const app=  express();
+// Create Express app
+const app = express();
 
-app.get("/", (req,res) => {
-    res.send("Server is ready");
+// Middleware to parse JSON
+app.use(express.json());
+
+// Route to test server
+app.get('/', (req, res) => {
+  res.send('Server is running!');
 });
 
- app.listen(8080, () => {
- 
-    console.log("Server started at http://localhost:8080");
- });
+// ✅ POST route to create a new user
+app.post('/users', async (req, res) => {
+  try {
+    const newUser = new User(req.body);
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
-  
- 
+// MongoDB connection
+const port = process.env.PORT || 8080;
+const mongoURI = process.env.MONGO_URI;
+
+mongoose.connect(mongoURI)
+  .then(() => {
+    console.log('MongoDB connected');
+    app.listen(port, () => {
+      console.log(`Server started at http://localhost:${port}`);
+    });
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+  });
