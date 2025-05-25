@@ -1,23 +1,23 @@
-// server.js
+
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import User from './models/user.js'; // Make sure this matches your filename (lowercase)
+import User from './models/user.js';
 
 dotenv.config();
 
-// Create Express app
+
 const app = express();
 
-// Middleware to parse JSON
+
 app.use(express.json());
 
-// Route to test server
+
 app.get('/', (req, res) => {
   res.send('Server is running!');
 });
 
-// ✅ POST route to create a new user
+
 app.post('/users', async (req, res) => {
   try {
     const newUser = new User(req.body);
@@ -28,7 +28,7 @@ app.post('/users', async (req, res) => {
   }
 });
 
-// MongoDB connection
+
 const port = process.env.PORT || 8080;
 const mongoURI = process.env.MONGO_URI;
 
