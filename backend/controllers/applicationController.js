@@ -72,7 +72,8 @@ export const applyForJob = async (req, res) => {
     // Populate application data
     await application.populate([
       { path: 'jobId', select: 'title company' },
-      { path: 'applicantId', select: 'firstName lastName email' }
+      { path: 'applicantId', select: 'firstName lastName email' },
+      { path: 'employerId', select: 'firstName lastName email' }
     ]);
 
     // Emit real-time notification to employer
@@ -214,7 +215,7 @@ export const getMyApplications = async (req, res) => {
     }
 
     const applications = await Application.find({ applicantId: req.user.id })
-      .populate('jobId', 'title company location type salary')
+      .populate('jobId', 'title company location type salary isActive')
       .sort({ appliedAt: -1 });
 
     res.status(200).json({

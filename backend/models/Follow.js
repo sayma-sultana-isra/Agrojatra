@@ -1,92 +1,34 @@
 import mongoose from 'mongoose';
 
-const postSchema = new mongoose.Schema({
-  author: {
+const followSchema = new mongoose.Schema({
+  follower: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
-  content: {
-    type: String,
-    required: [true, 'Post content is required'],
-    maxlength: [2000, 'Post content cannot exceed 2000 characters']
+  following: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
-  type: {
-    type: String,
-    enum: ['text', 'achievement', 'job_update', 'career_milestone', 'article'],
-    default: 'text'
-  },
-  attachments: [{
-    type: {
-      type: String,
-      enum: ['image', 'document', 'link']
-    },
-    url: String,
-    filename: String,
-    size: Number
-  }],
-  tags: [String],
-  likes: [{
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    likedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
-  comments: [{
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    content: {
-      type: String,
-      required: true,
-      maxlength: 500
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
-  shares: [{
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    sharedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
-  visibility: {
-    type: String,
-    enum: ['public', 'followers', 'connections'],
-    default: 'public'
-  },
-  isActive: {
-    type: Boolean,
-    default: true
+  followedAt: {
+    type: Date,
+    default: Date.now
   }
 }, {
   timestamps: true
 });
 
-postSchema.index({ author: 1, createdAt: -1 });
-postSchema.index({ tags: 1 });
-postSchema.index({ type: 1 });
-postSchema.index({ createdAt: -1 });
+// Compound index to ensure a user can only follow another user once
+followSchema.index({ follower: 1, following: 1 }, { unique: true });
 
-postSchema.virtual('likesCount').get(function () {
-  return this.likes.length;
-});
-postSchema.virtual('commentsCount').get(function () {
-  return this.comments.length;
-});
-postSchema.virtual('sharesCount').get(function () {
-  return this.shares.length;
+// Prevent users from following themselves
+followSchema.pre('save', function(next) {
+  if (this.follower.toString() === this.following.toString()) {
+    const error = new Error('Users cannot follow themselves');
+    return next(error);
+  }
+  next();
 });
 
-export default mongoose.models.Post || mongoose.model('Post', postSchema);
+export default mongoose.model('Follow', followSchema);

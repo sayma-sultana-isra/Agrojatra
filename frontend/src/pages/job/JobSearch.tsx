@@ -97,7 +97,7 @@ const JobSearch: React.FC = () => {
   const fetchMyApplications = async () => {
     try {
       const response = await axios.get('/applications/my');
-      const appliedJobIds = new Set(response.data.applications.map((app: any) => app.jobId._id));
+      const appliedJobIds = new Set(response.data.applications.map((app: any) => app.jobId?._id || app.jobId));
       setAppliedJobs(appliedJobIds);
     } catch (error) {
       // Silently handle error - user might not have any applications yet
@@ -133,6 +133,9 @@ const JobSearch: React.FC = () => {
       
       toast.success('Application submitted successfully!');
       fetchJobs(); // Refresh to update application count
+      
+      // Update local applied jobs state immediately
+      setAppliedJobs(prev => new Set(prev).add(jobId));
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to apply for job');
     } finally {

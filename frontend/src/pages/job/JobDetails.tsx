@@ -71,9 +71,10 @@ const JobDetails: React.FC = () => {
   const checkApplicationStatus = async () => {
     try {
       const response = await axios.get('/applications/my');
-      const hasAppliedToJob = response.data.applications.some(
-        (app: any) => app.jobId._id === id
-      );
+      const hasAppliedToJob = response.data.applications.some((app: any) => {
+        const jobId = app.jobId?._id || app.jobId;
+        return jobId === id;
+      });
       setHasApplied(hasAppliedToJob);
     } catch (error) {
       // Silently handle error
@@ -95,8 +96,10 @@ const JobDetails: React.FC = () => {
       setHasApplied(true);
       toast.success('Application submitted successfully!');
       
-      // Update applications count
-      setJob(prev => prev ? { ...prev, applicationsCount: (prev.applicationsCount || 0) + 1 } : null);
+      // Update applications count and refresh job data
+      if (job) {
+        setJob(prev => prev ? { ...prev, applicationsCount: (prev.applicationsCount || 0) + 1 } : null);
+      }
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to apply for job');
     } finally {

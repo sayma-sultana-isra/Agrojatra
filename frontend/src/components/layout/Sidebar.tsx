@@ -47,7 +47,7 @@ const Sidebar: React.FC = () => {
           { icon: User, label: 'My Profile', path: '/profile' },
           { icon: UserPlus, label: 'Network', path: '/network' },
           { icon: Briefcase, label: 'Job Search', path: '/jobs/search' },
-          { icon: FileText, label: 'Applied Jobs', path: '/applications' },
+          { icon: FileText, label: 'My Applications', path: '/applications' },
           { icon: CalendarDays, label: 'Events', path: '/events' },
           
           { icon: MapPin, label: 'Career Roadmap', path: '/roadmap' },

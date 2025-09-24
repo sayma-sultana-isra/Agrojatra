@@ -46,9 +46,11 @@ const Applications: React.FC = () => {
     try {
       setLoading(true);
       const response = await axios.get('/applications/my');
-      setApplications(response.data.applications);
+      setApplications(response.data.applications || []);
     } catch (error: any) {
+      console.error('Error fetching applications:', error);
       toast.error(error.response?.data?.message || 'Failed to fetch applications');
+      setApplications([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
