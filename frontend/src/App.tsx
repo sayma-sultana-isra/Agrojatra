@@ -36,6 +36,12 @@ import ManageApplications from './pages/employer/ManageApplications';
 import ManageEmployerJobs from './pages/employer/ManageEmployerJobs';
 import CreateEvent from './pages/employer/CreateEvent';
 import ManageEvents from './pages/employer/ManageEvents';
+import CreateCompany from './pages/employer/CreateCompany';
+import ManageCompanies from './pages/employer/ManageCompanies';
+
+// Company Pages
+import CompanySearch from './pages/company/CompanySearch';
+import CompanyDetails from './pages/company/CompanyDetails';
 
 function App() {
   return (
@@ -234,6 +240,40 @@ function App() {
                 element={
                   <PrivateRoute roles={['employer', 'admin']}>
                     <ManageEvents />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/companies/create"
+                element={
+                  <PrivateRoute roles={['employer', 'admin']}>
+                    <CreateCompany />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/companies/manage"
+                element={
+                  <PrivateRoute roles={['employer', 'admin']}>
+                    <ManageCompanies />
+                  </PrivateRoute>
+                }
+              />
+              
+              {/* Company Routes */}
+              <Route
+                path="/companies"
+                element={
+                  <PrivateRoute>
+                    <CompanySearch />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/companies/:id"
+                element={
+                  <PrivateRoute>
+                    <CompanyDetails />
                   </PrivateRoute>
                 }
               />

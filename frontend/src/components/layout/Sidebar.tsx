@@ -32,7 +32,8 @@ import {
   Upload,
   UserPlus,
   Home,
-  Radio
+  Radio,
+  Building
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -49,6 +50,7 @@ const Sidebar: React.FC = () => {
           { icon: Briefcase, label: 'Job Search', path: '/jobs/search' },
           { icon: FileText, label: 'My Applications', path: '/applications' },
           { icon: CalendarDays, label: 'Events', path: '/events' },
+          { icon: Building, label: 'Companies', path: '/companies' },
           
           { icon: MapPin, label: 'Career Roadmap', path: '/roadmap' },
           
@@ -67,6 +69,8 @@ const Sidebar: React.FC = () => {
           { icon: List, label: 'My Job Listings', path: '/jobs/manage' },
           { icon: Users, label: 'Applicants', path: '/applications/manage' },
           { icon: CalendarDays, label: 'Events', path: '/events' },
+          { icon: Building, label: 'My Companies', path: '/companies/manage' },
+          { icon: Search, label: 'Browse Companies', path: '/companies' },
           
           
           
@@ -80,6 +84,7 @@ const Sidebar: React.FC = () => {
           { icon: User, label: 'My Profile', path: '/profile' },
           
           { icon: CalendarDays, label: 'Events & Meetups', path: '/events' },
+          { icon: Building, label: 'Companies', path: '/companies' },
           
           
           

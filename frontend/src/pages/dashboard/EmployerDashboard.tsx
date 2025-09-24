@@ -15,7 +15,8 @@ import {
   Plus,
   ArrowRight,
   MessageSquare,
-  Loader2
+  Loader2,
+  Building
 } from 'lucide-react';
 
 interface Post {
@@ -282,6 +283,17 @@ const EmployerDashboard: React.FC = () => {
                     <span className="text-sm font-medium text-purple-900">Manage Job Listings</span>
                   </div>
                   <ArrowRight className="h-4 w-4 text-purple-600" />
+                </Link>
+                
+                <Link
+                  to="/companies/manage"
+                  className="w-full flex items-center justify-between p-3 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors"
+                >
+                  <div className="flex items-center space-x-3">
+                    <Building className="h-5 w-5 text-orange-600" />
+                    <span className="text-sm font-medium text-orange-900">My Companies</span>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-orange-600" />
                 </Link>
               </div>
             </motion.div>

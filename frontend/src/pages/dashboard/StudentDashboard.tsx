@@ -12,7 +12,8 @@ import {
   Briefcase, 
   ArrowRight,
   Loader2,
-  MessageSquare
+  MessageSquare,
+  Building
 } from 'lucide-react';
 
 interface Job {
@@ -266,6 +267,14 @@ const StudentDashboard: React.FC = () => {
                 >
                   <span className="text-sm font-medium text-purple-900">Find People</span>
                   <ArrowRight className="h-4 w-4 text-purple-600" />
+                </button>
+                
+                <button 
+                  onClick={() => navigate('/companies')}
+                  className="w-full flex items-center justify-between p-3 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors"
+                >
+                  <span className="text-sm font-medium text-orange-900">Explore Companies</span>
+                  <ArrowRight className="h-4 w-4 text-orange-600" />
                 </button>
               </div>
             </motion.div>

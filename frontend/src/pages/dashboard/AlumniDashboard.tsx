@@ -18,7 +18,8 @@ import {
   ArrowRight,
   UserPlus,
   BookOpen,
-  Loader2
+  Loader2,
+  Building
 } from 'lucide-react';
 
 interface Post {
@@ -281,6 +282,17 @@ const AlumniDashboard: React.FC = () => {
                     <span className="text-sm font-medium text-purple-900">My Network</span>
                   </div>
                   <ArrowRight className="h-4 w-4 text-purple-600" />
+                </button>
+                
+                <button 
+                  onClick={() => navigate('/companies')}
+                  className="w-full flex items-center justify-between p-3 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors"
+                >
+                  <div className="flex items-center space-x-3">
+                    <Building className="h-5 w-5 text-orange-600" />
+                    <span className="text-sm font-medium text-orange-900">Explore Companies</span>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-orange-600" />
                 </button>
               </div>
             </motion.div>
