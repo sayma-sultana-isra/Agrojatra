@@ -188,6 +188,11 @@ const Events: React.FC = () => {
     window.open(registrationLink, '_blank');
   };
 
+  // Check if current user is the event creator
+  const isEventCreator = (event: Event) => {
+    return user?._id === event.postedBy._id;
+  };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -338,6 +343,7 @@ const Events: React.FC = () => {
           {filteredEvents.map((event, index) => {
             const EventIcon = getEventIcon(event.type);
             const eventColor = getEventColor(event.type);
+            const isCreator = isEventCreator(event);
             
             return (
               <motion.div
@@ -361,6 +367,11 @@ const Events: React.FC = () => {
                         </span>
                       </div>
                       <div className="absolute top-4 right-4 flex space-x-2">
+                        {isCreator && (
+                          <span className="px-2 py-1 bg-white/90 text-gray-800 text-xs font-medium rounded-full">
+                            Your Event
+                          </span>
+                        )}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -420,16 +431,30 @@ const Events: React.FC = () => {
                             <span className="text-xs text-gray-500">+{event.tags.length - 2}</span>
                           )}
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRegister(event.registrationLink);
-                          }}
-                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center space-x-1"
-                        >
-                          <ExternalLink className="h-3 w-3" />
-                          <span>Register</span>
-                        </button>
+                        {!isCreator && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRegister(event.registrationLink);
+                            }}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center space-x-1"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                            <span>Register</span>
+                          </button>
+                        )}
+                        {isCreator && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate('/events/manage');
+                            }}
+                            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center space-x-1"
+                          >
+                            <Eye className="h-3 w-3" />
+                            <span>Manage</span>
+                          </button>
+                        )}
                       </div>
                     </div>
                   </>
@@ -449,6 +474,11 @@ const Events: React.FC = () => {
                           {event.status}
                         </span>
                         <span className="text-sm text-gray-500 capitalize">{event.type.replace('-', ' ')}</span>
+                        {isCreator && (
+                          <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                            Your Event
+                          </span>
+                        )}
                       </div>
                       
                       <p className="text-gray-600 mb-3">{event.description}</p>
@@ -489,16 +519,30 @@ const Events: React.FC = () => {
                       >
                         <Heart className="h-4 w-4" />
                       </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRegister(event.registrationLink);
-                        }}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-1"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                        <span>Register</span>
-                      </button>
+                      {!isCreator && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRegister(event.registrationLink);
+                          }}
+                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-1"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                          <span>Register</span>
+                        </button>
+                      )}
+                      {isCreator && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(user?.role === 'admin' ? '/admin/events' : '/events/manage');
+                          }}
+                          className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center space-x-1"
+                        >
+                          <Eye className="h-3 w-3" />
+                          <span>Manage</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 )}

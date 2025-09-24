@@ -6,7 +6,8 @@ import {
   deleteUser,
   getAllJobs,
   updateJobStatus,
-  getRecentActivities
+  getRecentActivities,
+  getAllEvents
 } from '../controllers/adminController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -28,5 +29,8 @@ router.delete('/users/:id', deleteUser);
 // Job management
 router.get('/jobs', getAllJobs);
 router.put('/jobs/:id/status', updateJobStatus);
+
+//changes for event fix 2.47
+router.get('/events', getAllEvents);
 
 export default router;
