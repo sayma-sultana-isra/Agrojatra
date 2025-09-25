@@ -109,24 +109,37 @@ const CompanyDetails: React.FC = () => {
   };
 
   const fetchMyApplications = async () => {
-    try {
-      const response = await axios.get('/applications/my');
-      const appliedJobIds = new Set(response.data.applications.map((app: any) => app.jobId?._id || app.jobId));
-      setAppliedJobs(appliedJobIds);
-    } catch (error) {
-      // Silently handle error
-    }
-  };
+  try {
+    const response = await axios.get('/applications/my');
+
+    const appliedJobIds = new Set<string>(
+      response.data.applications
+        .map((app: any) => app.jobId?._id || app.jobId)
+        .filter((id: string | number | undefined): id is string | number => !!id)
+        .map(String)
+    );
+
+    setAppliedJobs(appliedJobIds);
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+  }
+};
+
+
+
 
   const fetchMyCompanyApplications = async () => {
-    try {
-      const response = await axios.get('/company-applications/my');
-      const hasApplied = response.data.applications.some((app: any) => app.companyId._id === id);
-      setHasAppliedToCompany(hasApplied);
-    } catch (error) {
-      // Silently handle error
-    }
-  };
+  try {
+    const response = await axios.get('/company-applications/my');
+    const hasApplied = response.data.applications.some(
+      (app: any) => String(app.companyId._id) === id
+    );
+    setHasAppliedToCompany(hasApplied);
+  } catch (error) {
+    // Silently handle error
+  }
+};
+
 
   const handleApplyToCompany = async () => {
     if (!canApplyToCompany || hasAppliedToCompany || isApplyingToCompany || !company) return;
@@ -150,22 +163,25 @@ const CompanyDetails: React.FC = () => {
   };
 
   const handleApplyForJob = async (jobId: string) => {
-    if (!canApplyForJobs || appliedJobs.has(jobId)) return;
+  if (!canApplyForJobs || appliedJobs.has(jobId)) return;
 
-    try {
-      await axios.post('/applications', {
-        jobId,
-        coverLetter: 'I am interested in this position and believe I would be a great fit.',
-        resume: 'Resume content here'
-      });
-      
-      setAppliedJobs(prev => new Set(prev).add(jobId));
-      toast.success('Application submitted successfully!');
-      fetchCompany(); // Refresh to update application count
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to apply for job');
-    }
-  };
+  try {
+    await axios.post('/applications', {
+      jobId,
+      coverLetter: 'I am interested in this position and believe I would be a great fit.',
+      resume: 'Resume content here'
+    });
+
+    // TS-safe way to update the Set
+    setAppliedJobs(prev => new Set([...prev, jobId]));
+
+    toast.success('Application submitted successfully!');
+    fetchCompany(); // Refresh to update application count
+  } catch (error: any) {
+    toast.error(error.response?.data?.message || 'Failed to apply for job');
+  }
+};
+
 
   const getSizeLabel = (size: string) => {
     const labels = {
@@ -302,7 +318,7 @@ const CompanyDetails: React.FC = () => {
                   <div className="flex items-center space-x-3 mb-2">
                     <h1 className="text-3xl font-bold text-gray-900">{company.name}</h1>
                     {company.isVerified && (
-                      <Award className="h-6 w-6 text-blue-600" title="Verified Company" />
+                      <Award className="h-6 w-6 text-blue-600" aria-label="Verified Company" />
                     )}
                   </div>
                   

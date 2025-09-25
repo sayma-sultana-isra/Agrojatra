@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -89,14 +89,19 @@ const CompanySearch: React.FC = () => {
   };
 
   const fetchMyCompanyApplications = async () => {
-    try {
-      const response = await axios.get('/company-applications/my');
-      const appliedCompanyIds = new Set(response.data.applications.map((app: any) => app.companyId._id));
-      setAppliedCompanies(appliedCompanyIds);
-    } catch (error) {
-      // Silently handle error
-    }
-  };
+  try {
+    const response = await axios.get('/company-applications/my');
+    const appliedCompanyIds = new Set<string>(
+      response.data.applications
+        .map((app: any) => app.companyId?._id)
+        .filter((id: any): id is string => !!id)
+    );
+    setAppliedCompanies(appliedCompanyIds);
+  } catch (error) {
+    // Silently handle error
+  }
+};
+
 
   const handleApplyToCompany = async (companyId: string) => {
     if (!canApplyToCompanies || appliedCompanies.has(companyId) || applyingCompanies.has(companyId)) {
@@ -538,7 +543,7 @@ const CompanySearch: React.FC = () => {
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-xl font-semibold text-gray-900">{company.name}</h3>
                         {company.isVerified && (
-                          <Award className="h-5 w-5 text-blue-600" title="Verified Company" />
+                          <Award className="h-5 w-5 text-blue-600" aria-label="Verified Company" />
                         )}
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getIndustryColor(company.industry)}`}>
                           {company.industry}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSocket } from '../../contexts/SocketContext';
@@ -265,7 +266,7 @@ const CompanyApplications: React.FC = () => {
                             {application.companyId.name}
                           </h3>
                           {application.companyId.isVerified && (
-                            <Award className="h-5 w-5 text-blue-600" title="Verified Company" />
+                            <Award className="h-5 w-5 text-blue-600" aria-label="Verified Company" />
                           )}
                         </div>
                         <p className="text-gray-600 font-medium mb-2">{application.companyId.industry}</p>
