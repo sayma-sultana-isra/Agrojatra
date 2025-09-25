@@ -275,6 +275,13 @@ const ManageCompanies: React.FC = () => {
                       >
                         <Eye className="h-4 w-4" />
                       </Link>
+                      <Link
+                        to={`/companies/${company._id}/applications`}
+                        className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                        title="View Applications"
+                      >
+                        <Users className="h-4 w-4" />
+                      </Link>
                       <button
                         className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
                         title="Edit Company"

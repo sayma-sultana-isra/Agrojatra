@@ -12,7 +12,6 @@ import {
   Wrench,
   Bell,
   HelpCircle,
-  Building,
   PlusCircle,
   List,
   Search,
@@ -49,6 +48,7 @@ const Sidebar: React.FC = () => {
           { icon: UserPlus, label: 'Network', path: '/network' },
           { icon: Briefcase, label: 'Job Search', path: '/jobs/search' },
           { icon: FileText, label: 'My Applications', path: '/applications' },
+          { icon: Building, label: 'Company Applications', path: '/company-applications' },
           { icon: CalendarDays, label: 'Events', path: '/events' },
           { icon: Building, label: 'Companies', path: '/companies' },
           
@@ -70,6 +70,7 @@ const Sidebar: React.FC = () => {
           { icon: Users, label: 'Applicants', path: '/applications/manage' },
           { icon: CalendarDays, label: 'Events', path: '/events' },
           { icon: Building, label: 'My Companies', path: '/companies/manage' },
+          { icon: Users, label: 'Company Applications', path: '/companies/applications' },
           { icon: Search, label: 'Browse Companies', path: '/companies' },
           
           

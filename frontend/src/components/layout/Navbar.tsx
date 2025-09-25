@@ -21,7 +21,7 @@ import {
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
-  const { applicationUpdates, postUpdates, followUpdates } = useSocket();
+  const { applicationUpdates, companyApplicationUpdates, postUpdates, followUpdates } = useSocket();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
     return colors[role as keyof typeof colors] || 'bg-gray-500';
   };
 
-  const totalNotifications = applicationUpdates.length + postUpdates.length + followUpdates.length;
+  const totalNotifications = applicationUpdates.length + companyApplicationUpdates.length + postUpdates.length + followUpdates.length;
 
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b border-gray-200 z-50">
@@ -131,6 +131,22 @@ const Navbar: React.FC = () => {
                             <UserPlus className="h-4 w-4 text-blue-500" />
                             <div className="flex-1">
                               <p className="text-sm text-gray-900">{update.message}</p>
+                              <p className="text-xs text-gray-500">{update.timestamp.toLocaleTimeString()}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Company Application Updates */}
+                      {companyApplicationUpdates.map((update) => (
+                        <div key={update.id} className="px-4 py-3 hover:bg-gray-50 border-b border-gray-100">
+                          <div className="flex items-center space-x-2">
+                            <Building className="h-4 w-4 text-orange-500" />
+                            <div className="flex-1">
+                              <p className="text-sm text-gray-900">{update.message}</p>
+                              {update.companyName && (
+                                <p className="text-xs text-gray-600 mt-1">{update.companyName}</p>
+                              )}
                               <p className="text-xs text-gray-500">{update.timestamp.toLocaleTimeString()}</p>
                             </div>
                           </div>
