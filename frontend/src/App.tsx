@@ -21,6 +21,7 @@ import RoadmapDetails from './pages/roadmap/RoadmapDetails';
 import Profile from './pages/user/Profile';
 import UserProfile from './pages/user/UserProfile';
 import Applications from './pages/applications/Applications';
+import CompanyApplications from './pages/applications/CompanyApplications';
 import Feed from './pages/social/Feed';
 import Network from './pages/social/Network';
 import UserSearch from './pages/social/UserSearch';
@@ -38,6 +39,7 @@ import CreateEvent from './pages/employer/CreateEvent';
 import ManageEvents from './pages/employer/ManageEvents';
 import CreateCompany from './pages/employer/CreateCompany';
 import ManageCompanies from './pages/employer/ManageCompanies';
+import ManageCompanyApplications from './pages/employer/ManageCompanyApplications';
 
 // Company Pages
 import CompanySearch from './pages/company/CompanySearch';
@@ -132,6 +134,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Applications />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/company-applications"
+                element={
+                  <PrivateRoute roles={['student', 'alumni']}>
+                    <CompanyApplications />
                   </PrivateRoute>
                 }
               />
@@ -256,6 +266,14 @@ function App() {
                 element={
                   <PrivateRoute roles={['employer', 'admin']}>
                     <ManageCompanies />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/companies/:companyId/applications"
+                element={
+                  <PrivateRoute roles={['employer', 'admin']}>
+                    <ManageCompanyApplications />
                   </PrivateRoute>
                 }
               />

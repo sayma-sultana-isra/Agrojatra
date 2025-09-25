@@ -18,6 +18,7 @@ import cvRoutes from './routes/cvRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import roadmapRoutes from './routes/roadmapRoutes.js';
 import companyRoutes from './routes/companyRoutes.js';
+import companyApplicationRoutes from './routes/companyApplicationRoutes.js';
 
 dotenv.config();
 
@@ -91,6 +92,7 @@ app.use('/api/cv', cvRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/roadmaps', roadmapRoutes);
 app.use('/api/companies', companyRoutes);
+app.use('/api/company-applications', companyApplicationRoutes);
 
 // Health check route
 app.get('/', (req, res) => {

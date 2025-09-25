@@ -6,9 +6,11 @@ interface SocketContextType {
   socket: Socket | null;
   isConnected: boolean;
   applicationUpdates: ApplicationUpdate[];
+  companyApplicationUpdates: CompanyApplicationUpdate[];
   postUpdates: PostUpdate[];
   followUpdates: FollowUpdate[];
   clearApplicationUpdates: () => void;
+  clearCompanyApplicationUpdates: () => void;
   clearPostUpdates: () => void;
   clearFollowUpdates: () => void;
 }
@@ -21,6 +23,16 @@ interface ApplicationUpdate {
   applicationId?: string;
   jobTitle?: string;
   company?: string;
+  status?: string;
+}
+
+interface CompanyApplicationUpdate {
+  id: string;
+  type: 'new_company_application' | 'company_status_change';
+  message: string;
+  timestamp: Date;
+  applicationId?: string;
+  companyName?: string;
   status?: string;
 }
 
@@ -54,6 +66,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [applicationUpdates, setApplicationUpdates] = useState<ApplicationUpdate[]>([]);
+  const [companyApplicationUpdates, setCompanyApplicationUpdates] = useState<CompanyApplicationUpdate[]>([]);
   const [postUpdates, setPostUpdates] = useState<PostUpdate[]>([]);
   const [followUpdates, setFollowUpdates] = useState<FollowUpdate[]>([]);
   const { user } = useAuth();
@@ -117,6 +130,34 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         status: data.status
       };
       setApplicationUpdates(prev => [update, ...prev.slice(0, 9)]);
+    });
+
+    // Company application-related event handlers
+    socketInstance.on('newCompanyApplication', (data: any) => {
+      console.log('New company application received:', data);
+      const update: CompanyApplicationUpdate = {
+        id: Date.now().toString(),
+        type: 'new_company_application',
+        message: `New application received for ${data.companyName}`,
+        timestamp: new Date(),
+        applicationId: data.applicationId,
+        companyName: data.companyName
+      };
+      setCompanyApplicationUpdates(prev => [update, ...prev.slice(0, 9)]);
+    });
+
+    socketInstance.on('companyApplicationStatusUpdate', (data: any) => {
+      console.log('Company application status update:', data);
+      const update: CompanyApplicationUpdate = {
+        id: Date.now().toString(),
+        type: 'company_status_change',
+        message: `Your application to ${data.companyName} was ${data.status}`,
+        timestamp: new Date(),
+        applicationId: data._id || data.applicationId,
+        companyName: data.companyName,
+        status: data.status
+      };
+      setCompanyApplicationUpdates(prev => [update, ...prev.slice(0, 9)]);
     });
 
     socketInstance.on('offerResponse', (data: any) => {
@@ -195,6 +236,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     setApplicationUpdates([]);
   };
 
+  const clearCompanyApplicationUpdates = () => {
+    setCompanyApplicationUpdates([]);
+  };
+
   const clearPostUpdates = () => {
     setPostUpdates([]);
   };
@@ -207,9 +252,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     socket,
     isConnected,
     applicationUpdates,
+    companyApplicationUpdates,
     postUpdates,
     followUpdates,
     clearApplicationUpdates,
+    clearCompanyApplicationUpdates,
     clearPostUpdates,
     clearFollowUpdates
   };

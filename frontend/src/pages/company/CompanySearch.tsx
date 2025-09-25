@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -18,7 +18,9 @@ import {
   ExternalLink,
   Eye,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Send,
+  CheckCircle
 } from 'lucide-react';
 
 interface Company {
@@ -38,6 +40,7 @@ interface Company {
   technologies: string[];
   isVerified: boolean;
   createdAt: string;
+  hasApplied?: boolean;
 }
 
 const CompanySearch: React.FC = () => {
@@ -53,9 +56,15 @@ const CompanySearch: React.FC = () => {
   });
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [appliedCompanies, setAppliedCompanies] = useState<Set<string>>(new Set());
+  const [applyingCompanies, setApplyingCompanies] = useState<Set<string>>(new Set());
 
+  const canApplyToCompanies = user?.role === 'student' || user?.role === 'alumni';
   useEffect(() => {
     fetchCompanies();
+    if (canApplyToCompanies) {
+      fetchMyCompanyApplications();
+    }
   }, []);
 
   const fetchCompanies = async () => {
@@ -79,6 +88,84 @@ const CompanySearch: React.FC = () => {
     }
   };
 
+  const fetchMyCompanyApplications = async () => {
+  try {
+    const response = await axios.get('/company-applications/my');
+    const appliedCompanyIds = new Set<string>(
+      response.data.applications
+        .map((app: any) => app.companyId?._id)
+        .filter((id: any): id is string => !!id)
+    );
+    setAppliedCompanies(appliedCompanyIds);
+  } catch (error) {
+    // Silently handle error
+  }
+};
+
+
+  const handleApplyToCompany = async (companyId: string) => {
+    if (!canApplyToCompanies || appliedCompanies.has(companyId) || applyingCompanies.has(companyId)) {
+      return;
+    }
+
+    try {
+      setApplyingCompanies(prev => new Set(prev).add(companyId));
+      
+      await axios.post('/company-applications', {
+        companyId,
+        coverLetter: 'I am interested in joining your company and believe I would be a valuable addition to your team.',
+        resume: 'Resume content here'
+      });
+      
+      setAppliedCompanies(prev => new Set(prev).add(companyId));
+      toast.success('Application submitted successfully!');
+      fetchCompanies(); // Refresh to update any counts
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to apply to company');
+    } finally {
+      setApplyingCompanies(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(companyId);
+        return newSet;
+      });
+    }
+  };
+
+  const getApplyButtonState = (companyId: string) => {
+    if (!canApplyToCompanies) {
+      return {
+        text: 'View Profile',
+        disabled: false,
+        className: 'px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center space-x-1',
+        isViewOnly: true
+      };
+    }
+
+    if (applyingCompanies.has(companyId)) {
+      return {
+        text: 'Applying...',
+        disabled: true,
+        className: 'px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed text-sm',
+        isViewOnly: false
+      };
+    }
+    
+    if (appliedCompanies.has(companyId)) {
+      return {
+        text: 'Applied',
+        disabled: true,
+        className: 'px-4 py-2 bg-green-600 text-white rounded-lg cursor-not-allowed text-sm flex items-center space-x-1',
+        isViewOnly: false
+      };
+    }
+    
+    return {
+      text: 'Apply',
+      disabled: false,
+      className: 'px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center space-x-1',
+      isViewOnly: false
+    };
+  };
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     fetchCompanies();
@@ -121,7 +208,10 @@ const CompanySearch: React.FC = () => {
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Discover Companies</h1>
               <p className="text-gray-600">
-                Explore companies and find your next career opportunity
+                {canApplyToCompanies 
+                  ? 'Explore companies and apply directly to organizations you\'re interested in'
+                  : 'Explore companies and discover potential partners or competitors'
+                }
               </p>
             </div>
             <div className="flex items-center space-x-3">
@@ -134,6 +224,46 @@ const CompanySearch: React.FC = () => {
             </div>
           </div>
         </motion.div>
+
+        {/* Role-based Notice */}
+        {!canApplyToCompanies && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6"
+          >
+            <div className="flex items-center space-x-2">
+              <Building className="h-5 w-5 text-blue-600" />
+              <p className="text-blue-800">
+                {user?.role === 'employer' 
+                  ? 'As an employer, you can browse companies for insights but cannot apply. Use this to understand the market and potential partnerships.'
+                  : 'You are viewing companies in browse mode. Only students and alumni can apply to companies.'
+                }
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Applied Companies Notice */}
+        {canApplyToCompanies && appliedCompanies.size > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6"
+          >
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+              <p className="text-green-800">
+                You have applied to {appliedCompanies.size} compan{appliedCompanies.size !== 1 ? 'ies' : 'y'}. 
+                <Link to="/company-applications" className="ml-1 underline hover:no-underline">
+                  View your applications
+                </Link>
+              </p>
+            </div>
+          </motion.div>
+        )}
 
         {/* Search and Filters */}
         <motion.div
@@ -350,11 +480,45 @@ const CompanySearch: React.FC = () => {
                             e.stopPropagation();
                             navigate(`/companies/${company._id}`);
                           }}
-                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center space-x-1"
+                          className="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center space-x-1"
                         >
                           <Eye className="h-3 w-3" />
                           <span>View</span>
                         </button>
+                        
+                      {canApplyToCompanies && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!getApplyButtonState(company._id).isViewOnly) {
+                              handleApplyToCompany(company._id);
+                            }
+                          }}
+                          disabled={getApplyButtonState(company._id).disabled}
+                          className={getApplyButtonState(company._id).className}
+                        >
+                          {appliedCompanies.has(company._id) && <CheckCircle className="h-4 w-4" />}
+                          {!appliedCompanies.has(company._id) && !applyingCompanies.has(company._id) && <Send className="h-4 w-4" />}
+                          <span>{getApplyButtonState(company._id).text}</span>
+                        </button>
+                      )}
+                      
+                        {canApplyToCompanies && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (!getApplyButtonState(company._id).isViewOnly) {
+                                handleApplyToCompany(company._id);
+                              }
+                            }}
+                            disabled={getApplyButtonState(company._id).disabled}
+                            className={getApplyButtonState(company._id).className}
+                          >
+                            {appliedCompanies.has(company._id) && <CheckCircle className="h-3 w-3" />}
+                            {!appliedCompanies.has(company._id) && !applyingCompanies.has(company._id) && <Send className="h-3 w-3" />}
+                            <span>{getApplyButtonState(company._id).text}</span>
+                          </button>
+                        )}
                       </div>
                     </div>
                   </>
@@ -379,7 +543,7 @@ const CompanySearch: React.FC = () => {
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-xl font-semibold text-gray-900">{company.name}</h3>
                         {company.isVerified && (
-                          <Award className="h-5 w-5 text-blue-600" title="Verified Company" />
+                          <Award className="h-5 w-5 text-blue-600" aria-label="Verified Company" />
                         )}
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getIndustryColor(company.industry)}`}>
                           {company.industry}

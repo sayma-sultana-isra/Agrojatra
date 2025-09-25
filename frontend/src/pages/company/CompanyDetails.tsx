@@ -20,7 +20,9 @@ import {
   Share2,
   ArrowLeft,
   Eye,
-  CheckCircle
+  CheckCircle,
+  Send,
+  MessageSquare
 } from 'lucide-react';
 
 interface Job {
@@ -65,6 +67,7 @@ interface Company {
   isVerified: boolean;
   createdAt: string;
   jobs: Job[];
+  hasApplied?: boolean;
 }
 
 const CompanyDetails: React.FC = () => {
@@ -74,8 +77,11 @@ const CompanyDetails: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'culture'>('overview');
   const [appliedJobs, setAppliedJobs] = useState<Set<string>>(new Set());
+  const [hasAppliedToCompany, setHasAppliedToCompany] = useState(false);
+  const [isApplyingToCompany, setIsApplyingToCompany] = useState(false);
 
   const canApplyForJobs = user?.role === 'student' || user?.role === 'alumni';
+  const canApplyToCompany = user?.role === 'student' || user?.role === 'alumni';
 
   useEffect(() => {
     if (id) {
@@ -83,8 +89,11 @@ const CompanyDetails: React.FC = () => {
       if (canApplyForJobs) {
         fetchMyApplications();
       }
+      if (canApplyToCompany) {
+        fetchMyCompanyApplications();
+      }
     }
-  }, [id, canApplyForJobs]);
+  }, [id, canApplyForJobs, canApplyToCompany]);
 
   const fetchCompany = async () => {
     try {
@@ -100,32 +109,79 @@ const CompanyDetails: React.FC = () => {
   };
 
   const fetchMyApplications = async () => {
+  try {
+    const response = await axios.get('/applications/my');
+
+    const appliedJobIds = new Set<string>(
+      response.data.applications
+        .map((app: any) => app.jobId?._id || app.jobId)
+        .filter((id: string | number | undefined): id is string | number => !!id)
+        .map(String)
+    );
+
+    setAppliedJobs(appliedJobIds);
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+  }
+};
+
+
+
+
+  const fetchMyCompanyApplications = async () => {
+  try {
+    const response = await axios.get('/company-applications/my');
+    const hasApplied = response.data.applications.some(
+      (app: any) => String(app.companyId._id) === id
+    );
+    setHasAppliedToCompany(hasApplied);
+  } catch (error) {
+    // Silently handle error
+  }
+};
+
+
+  const handleApplyToCompany = async () => {
+    if (!canApplyToCompany || hasAppliedToCompany || isApplyingToCompany || !company) return;
+
     try {
-      const response = await axios.get('/applications/my');
-      const appliedJobIds = new Set(response.data.applications.map((app: any) => app.jobId?._id || app.jobId));
-      setAppliedJobs(appliedJobIds);
-    } catch (error) {
-      // Silently handle error
+      setIsApplyingToCompany(true);
+      
+      await axios.post('/company-applications', {
+        companyId: company._id,
+        coverLetter: `I am very interested in joining ${company.name} and believe my skills and experience would be a valuable addition to your team. I would love to discuss potential opportunities with your organization.`,
+        resume: 'Resume content here'
+      });
+      
+      setHasAppliedToCompany(true);
+      toast.success('Application submitted successfully!');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to apply to company');
+    } finally {
+      setIsApplyingToCompany(false);
     }
   };
 
   const handleApplyForJob = async (jobId: string) => {
-    if (!canApplyForJobs || appliedJobs.has(jobId)) return;
+  if (!canApplyForJobs || appliedJobs.has(jobId)) return;
 
-    try {
-      await axios.post('/applications', {
-        jobId,
-        coverLetter: 'I am interested in this position and believe I would be a great fit.',
-        resume: 'Resume content here'
-      });
-      
-      setAppliedJobs(prev => new Set(prev).add(jobId));
-      toast.success('Application submitted successfully!');
-      fetchCompany(); // Refresh to update application count
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to apply for job');
-    }
-  };
+  try {
+    await axios.post('/applications', {
+      jobId,
+      coverLetter: 'I am interested in this position and believe I would be a great fit.',
+      resume: 'Resume content here'
+    });
+
+    // TS-safe way to update the Set
+    setAppliedJobs(prev => new Set([...prev, jobId]));
+
+    toast.success('Application submitted successfully!');
+    fetchCompany(); // Refresh to update application count
+  } catch (error: any) {
+    toast.error(error.response?.data?.message || 'Failed to apply for job');
+  }
+};
+
 
   const getSizeLabel = (size: string) => {
     const labels = {
@@ -142,6 +198,38 @@ const CompanyDetails: React.FC = () => {
   const formatSalary = (salary: any) => {
     if (!salary || !salary.min || !salary.max) return 'Salary not specified';
     return `$${salary.min}k - $${salary.max}k`;
+  };
+
+  const getCompanyApplyButtonState = () => {
+    if (!canApplyToCompany) {
+      return {
+        text: user?.role === 'employer' ? 'View Only (Employer)' : 'View Only',
+        disabled: true,
+        className: 'px-4 py-2 bg-gray-500 text-white rounded-lg cursor-not-allowed flex items-center space-x-2'
+      };
+    }
+
+    if (isApplyingToCompany) {
+      return {
+        text: 'Applying...',
+        disabled: true,
+        className: 'px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed'
+      };
+    }
+    
+    if (hasAppliedToCompany) {
+      return {
+        text: 'Applied to Company',
+        disabled: true,
+        className: 'px-4 py-2 bg-green-600 text-white rounded-lg cursor-not-allowed flex items-center space-x-2'
+      };
+    }
+    
+    return {
+      text: 'Apply to Company',
+      disabled: false,
+      className: 'px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2'
+    };
   };
 
   if (loading) {
@@ -230,7 +318,7 @@ const CompanyDetails: React.FC = () => {
                   <div className="flex items-center space-x-3 mb-2">
                     <h1 className="text-3xl font-bold text-gray-900">{company.name}</h1>
                     {company.isVerified && (
-                      <Award className="h-6 w-6 text-blue-600" title="Verified Company" />
+                      <Award className="h-6 w-6 text-blue-600" aria-label="Verified Company" />
                     )}
                   </div>
                   
@@ -274,13 +362,47 @@ const CompanyDetails: React.FC = () => {
                     <span>Visit Website</span>
                   </button>
                 )}
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                  Follow Company
-                </button>
+                
+                {canApplyToCompany ? (
+                  <button
+                    onClick={handleApplyToCompany}
+                    disabled={getCompanyApplyButtonState().disabled}
+                    className={getCompanyApplyButtonState().className}
+                  >
+                    {hasAppliedToCompany && <CheckCircle className="h-4 w-4" />}
+                    {!hasAppliedToCompany && !isApplyingToCompany && <Send className="h-4 w-4" />}
+                    <span>{getCompanyApplyButtonState().text}</span>
+                  </button>
+                ) : (
+                  <button className="px-4 py-2 bg-gray-600 text-white rounded-lg cursor-not-allowed flex items-center space-x-2">
+                    <Eye className="h-4 w-4" />
+                    <span>View Only</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </motion.div>
+
+        {/* Application Status Notice */}
+        {canApplyToCompany && hasAppliedToCompany && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6"
+          >
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="text-green-800 font-medium">Application Submitted!</p>
+                <p className="text-green-700 text-sm">
+                  Your application to {company?.name} has been submitted. The company will review it and get back to you.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Tabs */}
         <motion.div
