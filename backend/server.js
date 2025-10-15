@@ -19,7 +19,6 @@ import userRoutes from './routes/userRoutes.js';
 import roadmapRoutes from './routes/roadmapRoutes.js';
 import companyRoutes from './routes/companyRoutes.js';
 import companyApplicationRoutes from './routes/companyApplicationRoutes.js';
-import skillMatchRoutes from './routes/skillMatchRoutes.js';
 
 dotenv.config();
 
@@ -94,7 +93,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/roadmaps', roadmapRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/company-applications', companyApplicationRoutes);
-app.use('/api/skill-matches', skillMatchRoutes);
+
 
 // Health check route
 app.get('/', (req, res) => {
