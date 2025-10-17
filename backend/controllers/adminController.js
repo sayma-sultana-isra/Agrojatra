@@ -282,25 +282,36 @@ export const getAllJobs = async (req, res) => {
   }
 };
 
+//changes event fix 18 aug
 export const getAllEvents = async (req, res) => {
   try {
     const { 
       page = 1, 
       limit = 10, 
       status, 
-      type 
+      type ,
+      search,
+      sort = '-createdAt'
     } = req.query;
 
     const filter = {};
     if (status) filter.status = status;
     if (type) filter.type = type;
+    // Text search
+    if (search) {
+     filter.$or = [
+       { title: { $regex: search, $options: 'i' } },
+       { description: { $regex: search, $options: 'i' } },
+       { organizer: { $regex: search, $options: 'i' } }
+      ];
+    }
 
     const [events, total] = await Promise.all([
       Event.find(filter)
-        .sort('-createdAt')
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .populate('postedBy', 'firstName lastName'),
+       .sort('-createdAt')
+         .limit(limit * 1)
+         .skip((page - 1) * limit)
+         .populate('postedBy', 'firstName lastName'),
       Event.countDocuments(filter)
     ]);
 

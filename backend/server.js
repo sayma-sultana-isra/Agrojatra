@@ -5,6 +5,7 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
+import fs from 'fs';
 
 // Import routes
 import authRoutes from './routes/authRoutes.js';
@@ -19,6 +20,7 @@ import userRoutes from './routes/userRoutes.js';
 import roadmapRoutes from './routes/roadmapRoutes.js';
 import companyRoutes from './routes/companyRoutes.js';
 import companyApplicationRoutes from './routes/companyApplicationRoutes.js';
+import mentorshipRoutes from './routes/mentorshipRoutes.js';
 
 dotenv.config();
 
@@ -62,6 +64,7 @@ io.on('connection', (socket) => {
   });
 });
 
+
 // Make io and connectedUsers available in routes
 app.use((req, res, next) => {
   req.io = io;
@@ -93,6 +96,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/roadmaps', roadmapRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/company-applications', companyApplicationRoutes);
+app.use('/api/mentorship', mentorshipRoutes);
 
 // Health check route
 app.get('/', (req, res) => {

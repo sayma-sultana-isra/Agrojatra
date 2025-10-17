@@ -30,6 +30,8 @@ import UserSearch from './pages/social/UserSearch';
 import ManageUsers from './pages/admin/ManageUsers';
 import ManageJobs from './pages/admin/ManageJobs';
 import ManageRoadmaps from './pages/admin/ManageRoadmaps';
+import ManageAdminEvents from  './pages/admin/ManageAdminEvents';
+
 
 // Employer Pages
 import CreateJob from './pages/employer/CreateJob';
@@ -44,6 +46,14 @@ import ManageCompanyApplications from './pages/employer/ManageCompanyApplication
 // Company Pages
 import CompanySearch from './pages/company/CompanySearch';
 import CompanyDetails from './pages/company/CompanyDetails';
+
+// Mentorship Pages
+import AlumniMentorshipDashboard from './pages/mentorship/AlumniMentorshipDashboard';
+import StudentMentorshipDashboard from './pages/mentorship/StudentMentorshipDashboard';
+import CreateProgram from './pages/mentorship/CreateProgram';
+import ProgramContent from './pages/mentorship/ProgramContent';
+import AdminMentorshipManagement from './pages/mentorship/AdminMentorshipManagement';
+
 
 function App() {
   return (
@@ -204,6 +214,15 @@ function App() {
                 }
               />
               <Route
+                path="/admin/events"
+                element={
+                  <PrivateRoute roles={['admin']}>
+                    <ManageAdminEvents />
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
                 path="/admin/roadmaps"
                 element={
                   <PrivateRoute roles={['admin']}>
@@ -295,6 +314,56 @@ function App() {
                   </PrivateRoute>
                 }
               />
+               {/* Mentorship Routes */}
+              <Route
+                path="/mentorship/alumni"
+                element={
+                  <PrivateRoute roles={['alumni']}>
+                    <AlumniMentorshipDashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/mentorship/student"
+                element={
+                  <PrivateRoute roles={['student']}>
+                    <StudentMentorshipDashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/mentorship/admin"
+                element={
+                  <PrivateRoute roles={['admin']}>
+                    <AdminMentorshipManagement />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/mentorship/create"
+                element={
+                  <PrivateRoute roles={['alumni']}>
+                    <CreateProgram />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/mentorship/programs/:programId/content"
+                element={
+                  <PrivateRoute roles={['student', 'alumni']}>
+                    <ProgramContent />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/mentorship/programs/:programId"
+                element={
+                  <PrivateRoute roles={['student', 'alumni', 'admin']}>
+                    <ProgramContent />
+                  </PrivateRoute>
+                }
+              />
+
               
               {/* Root redirect */}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />

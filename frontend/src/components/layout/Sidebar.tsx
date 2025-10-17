@@ -32,7 +32,8 @@ import {
   UserPlus,
   Home,
   Radio,
-  Building
+  Building,
+  GraduationCap
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -51,6 +52,7 @@ const Sidebar: React.FC = () => {
           { icon: Building, label: 'Company Applications', path: '/company-applications' },
           { icon: CalendarDays, label: 'Events', path: '/events' },
           { icon: Building, label: 'Companies', path: '/companies' },
+          { icon: GraduationCap, label: 'Mentorship', path: '/mentorship/student' },
           
           { icon: MapPin, label: 'Career Roadmap', path: '/roadmap' },
           
@@ -86,6 +88,7 @@ const Sidebar: React.FC = () => {
           
           { icon: CalendarDays, label: 'Events & Meetups', path: '/events' },
           { icon: Building, label: 'Companies', path: '/companies' },
+          { icon: GraduationCap, label: 'Mentorship', path: '/mentorship/alumni' },
           
           
           
@@ -98,6 +101,8 @@ const Sidebar: React.FC = () => {
           { icon: Home, label: 'Dashboard', path: '/dashboard' },
           { icon: Users, label: 'Manage Users', path: '/admin/users' },
           { icon: Briefcase, label: 'Manage Jobs', path: '/admin/jobs' },
+          { icon: GraduationCap, label: 'Manage Mentorship', path: '/mentorship/admin' },
+          { icon: CalendarDays,  label: 'Manage Events' , path: '/admin/events' },
           { icon: Target, label: 'Career Roadmaps', path: '/admin/roadmaps' }
           
           

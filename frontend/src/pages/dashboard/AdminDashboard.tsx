@@ -8,7 +8,8 @@ import {
   Users, 
   Briefcase, 
   Target,
-  Loader2
+  Loader2,
+  CalendarDays
 } from 'lucide-react';
 
 interface AdminStats {
@@ -170,6 +171,16 @@ const AdminDashboard: React.FC = () => {
                     <p className="text-sm text-green-700">Review and approve job listings</p>
                   </div>
                 </Link>
+                <Link
+                  to="/admin/events"
+                  className="p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors flex items-center space-x-3"
+                >
+                  <CalendarDays className="h-6 w-6 text-yellow-600" />
+                  <div>
+                    <p className="font-medium text-yellow-900">Manage Events</p>
+                    <p className="text-sm text-yellow-700">Review and moderate events</p>
+                   </div>
+               </Link>
                 
                 <Link
                   to="/admin/roadmaps"
