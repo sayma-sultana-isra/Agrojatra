@@ -45,6 +45,9 @@ import ManageCompanyApplications from './pages/employer/ManageCompanyApplication
 import CompanySearch from './pages/company/CompanySearch';
 import CompanyDetails from './pages/company/CompanyDetails';
 
+// Recommendation Pages
+import JobRecommendations from './pages/recommendations/JobRecommendations';
+
 function App() {
   return (
     <BrowserRouter>
@@ -295,7 +298,17 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              
+
+              {/* Recommendation Routes */}
+              <Route
+                path="/recommendations"
+                element={
+                  <PrivateRoute roles={['student', 'alumni']}>
+                    <JobRecommendations />
+                  </PrivateRoute>
+                }
+              />
+
               {/* Root redirect */}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               
