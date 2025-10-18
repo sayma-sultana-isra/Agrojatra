@@ -17,19 +17,17 @@ A web application for **Students, Alumni, Employers, and Admins** to manage jobs
 
 ## Setup
 
-Backend
+### Backend
+cd backend  
+npm install  
+npm run dev  
 
--cd backend
--npm install
--npm run dev
+Set up .env with your MongoDB URI and JWT secret
 
+### Frontend
+cd frontend  
+npm install  
+npm run dev
 
-Set up .env with your MongoDB URI and JWT secret.
-
-Frontend
-
--cd frontend
--npm install
--npm run dev
 
 
