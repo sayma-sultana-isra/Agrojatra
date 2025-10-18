@@ -20,7 +20,7 @@ A web application for **Students, Alumni, Employers, and Admins** to manage jobs
 ### Backend
 cd backend  
 npm install  
-npm run dev  
+node server.js
 
 Set up .env with your MongoDB URI and JWT secret
 
