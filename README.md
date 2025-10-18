@@ -26,7 +26,7 @@ npm run dev
 
 Set up .env with your MongoDB URI and JWT secret.
 
-Frontend
+## Frontend
 cd frontend
 npm install
 npm run dev
