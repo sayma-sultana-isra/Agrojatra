@@ -5,23 +5,17 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import { 
-  Users, 
-  Search, 
-  Filter, 
-  Eye, 
-  CheckCircle, 
+import {
+  Users,
+  Search,
+  Eye,
+  CheckCircle,
   XCircle,
   Clock,
   AlertCircle,
-  MessageSquare,
-  Download,
-  Star,
   GraduationCap,
   MapPin,
-  Calendar,
-  Award,
-  Building
+  Award
 } from 'lucide-react';
 
 interface CompanyApplication {
@@ -306,16 +300,12 @@ const ManageCompanyApplications: React.FC = () => {
 
                   <div className="mt-4 flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <button 
+                      <button
                         onClick={() => setSelectedApplication(application)}
                         className="flex items-center space-x-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                       >
                         <Eye className="h-4 w-4" />
                         <span>View Details</span>
-                      </button>
-                      <button className="flex items-center space-x-1 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                        <MessageSquare className="h-4 w-4" />
-                        <span>Message</span>
                       </button>
                     </div>
 
