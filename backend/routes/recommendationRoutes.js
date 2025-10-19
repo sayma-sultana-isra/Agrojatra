@@ -8,16 +8,18 @@ import {
   provideFeedback,
   getRecommendationStats
 } from '../controllers/recommendationController.js';
-import { authenticate } from '../middleware/authMiddleware.js';
+// Correctly import verifyToken
+import { verifyToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', authenticate, getRecommendations);
-router.get('/saved', authenticate, getSavedRecommendations);
-router.get('/stats', authenticate, getRecommendationStats);
-router.get('/:id', authenticate, getRecommendationById);
-router.put('/:id/view', authenticate, markRecommendationAsViewed);
-router.put('/:id/save', authenticate, saveRecommendation);
-router.post('/:id/feedback', authenticate, provideFeedback);
+// Use verifyToken instead of authenticate
+router.get('/', verifyToken, getRecommendations);
+router.get('/saved', verifyToken, getSavedRecommendations);
+router.get('/stats', verifyToken, getRecommendationStats);
+router.get('/:id', verifyToken, getRecommendationById);
+router.put('/:id/view', verifyToken, markRecommendationAsViewed);
+router.put('/:id/save', verifyToken, saveRecommendation);
+router.post('/:id/feedback', verifyToken, provideFeedback);
 
 export default router;

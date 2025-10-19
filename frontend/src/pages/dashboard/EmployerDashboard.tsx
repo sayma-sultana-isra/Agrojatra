@@ -7,16 +7,15 @@ import CreatePostForm from '../../components/social/CreatePostForm';
 import PostCard from '../../components/social/PostCard';
 import axios from 'axios';
 
-import { 
-  Briefcase, 
-  Users, 
-  Eye, 
+import {
+  Briefcase,
+  Users,
+  Eye,
   TrendingUp,
   Plus,
   ArrowRight,
   MessageSquare,
-  Loader2,
-  Building
+  Loader2
 } from 'lucide-react';
 
 interface Post {
@@ -58,6 +57,7 @@ interface Job {
   type: string;
   applicationsCount: number;
   createdAt: string;
+  isActive: boolean; // Added isActive property
 }
 
 const EmployerDashboard: React.FC = () => {
@@ -75,7 +75,7 @@ const EmployerDashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch posts
       try {
         const postsResponse = await axios.get('/posts/feed');
@@ -83,7 +83,7 @@ const EmployerDashboard: React.FC = () => {
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
-      
+
       // Fetch employer jobs
       try {
         const jobsResponse = await axios.get('/jobs/employer/my');
@@ -91,7 +91,7 @@ const EmployerDashboard: React.FC = () => {
       } catch (error) {
         console.error('Error fetching jobs:', error);
       }
-      
+
       // Fetch applications
       try {
         const applicationsResponse = await axios.get('/applications/employer');
@@ -99,7 +99,7 @@ const EmployerDashboard: React.FC = () => {
       } catch (error) {
         console.error('Error fetching applications:', error);
       }
-      
+
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -118,8 +118,6 @@ const EmployerDashboard: React.FC = () => {
   const stats = [
     { label: 'Active Job Posts', value: jobs.filter(job => job.isActive).length.toString(), change: '', icon: Briefcase, color: 'bg-blue-500' },
     { label: 'Total Applications', value: applications.length.toString(), change: '', icon: Users, color: 'bg-emerald-500' },
-    { label: 'Profile Views', value: '0', change: '', icon: Eye, color: 'bg-purple-500' },
-    { label: 'Hire Success Rate', value: '0%', change: '', icon: TrendingUp, color: 'bg-orange-500' },
   ];
 
   if (loading) {
@@ -153,7 +151,7 @@ const EmployerDashboard: React.FC = () => {
                 Share updates and connect with potential candidates
               </p>
             </div>
-            <Link 
+            <Link
               to="/jobs/create"
               className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
@@ -250,9 +248,9 @@ const EmployerDashboard: React.FC = () => {
               className="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
             >
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-              
+
               <div className="space-y-3">
-                <Link 
+                <Link
                   to="/jobs/create"
                   className="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                 >
@@ -262,8 +260,8 @@ const EmployerDashboard: React.FC = () => {
                   </div>
                   <ArrowRight className="h-4 w-4 text-blue-600" />
                 </Link>
-                
-                <Link 
+
+                <Link
                   to="/applications/manage"
                   className="w-full flex items-center justify-between p-3 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors"
                 >
@@ -273,7 +271,7 @@ const EmployerDashboard: React.FC = () => {
                   </div>
                   <ArrowRight className="h-4 w-4 text-emerald-600" />
                 </Link>
-                
+
                 <Link
                   to="/jobs/manage"
                   className="w-full flex items-center justify-between p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
@@ -283,17 +281,6 @@ const EmployerDashboard: React.FC = () => {
                     <span className="text-sm font-medium text-purple-900">Manage Job Listings</span>
                   </div>
                   <ArrowRight className="h-4 w-4 text-purple-600" />
-                </Link>
-                
-                <Link
-                  to="/companies/manage"
-                  className="w-full flex items-center justify-between p-3 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors"
-                >
-                  <div className="flex items-center space-x-3">
-                    <Building className="h-5 w-5 text-orange-600" />
-                    <span className="text-sm font-medium text-orange-900">My Companies</span>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-orange-600" />
                 </Link>
               </div>
             </motion.div>
@@ -307,14 +294,14 @@ const EmployerDashboard: React.FC = () => {
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Recent Applications</h2>
-                <Link 
+                <Link
                   to="/applications/manage"
                   className="text-blue-600 hover:text-blue-700 text-sm font-medium"
                 >
                   View All
                 </Link>
               </div>
-              
+
               {applications.length > 0 ? (
                 <div className="space-y-3">
                   {applications.slice(0, 3).map((app: any, index: number) => (
@@ -331,10 +318,10 @@ const EmployerDashboard: React.FC = () => {
                       <div className="flex justify-between items-center mt-2">
                         <span className={`px-2 py-1 text-xs rounded-full ${
                           app.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          app.status === 'shortlisted' ? 'bg-blue-100 text-blue-800' :
-                          app.status === 'appointed' ? 'bg-green-100 text-green-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
+                            app.status === 'shortlisted' ? 'bg-blue-100 text-blue-800' :
+                              app.status === 'appointed' ? 'bg-green-100 text-green-800' :
+                                'bg-red-100 text-red-800'
+                          }`}>
                           {app.status}
                         </span>
                         <button className="text-blue-600 text-sm">Review</button>

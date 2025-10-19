@@ -25,6 +25,7 @@ import CompanyApplications from './pages/applications/CompanyApplications';
 import Feed from './pages/social/Feed';
 import Network from './pages/social/Network';
 import UserSearch from './pages/social/UserSearch';
+import NotificationsPage from './pages/notifications/NotificationsPage'; // This line is added
 
 // Admin Pages
 import ManageUsers from './pages/admin/ManageUsers';
@@ -185,6 +186,16 @@ function App() {
                 element={
                   <PrivateRoute>
                     <UserSearch />
+                  </PrivateRoute>
+                }
+              />
+
+              {/* THIS IS THE NEW ROUTE FOR NOTIFICATIONS */}
+              <Route
+                path="/notifications"
+                element={
+                  <PrivateRoute>
+                    <NotificationsPage />
                   </PrivateRoute>
                 }
               />
@@ -355,5 +366,5 @@ function DashboardRouter() {
   }
 }
 
-
 export default App;
+

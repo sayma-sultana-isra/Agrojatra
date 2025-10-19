@@ -78,4 +78,5 @@ userSchema.methods.toJSON = function() {
   return userObject;
 };
 
-export default mongoose.model('User', userSchema);
+// FIX: Check if the model already exists before creating it
+export default mongoose.models.User || mongoose.model('User', userSchema);
