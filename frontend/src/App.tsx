@@ -42,6 +42,7 @@ import ManageEvents from './pages/employer/ManageEvents';
 import CreateCompany from './pages/employer/CreateCompany';
 import ManageCompanies from './pages/employer/ManageCompanies';
 import ManageCompanyApplications from './pages/employer/ManageCompanyApplications';
+import CreateCompanyProfile from './pages/employer/CreateCompanyProfile';
 
 // Company Pages
 import CompanySearch from './pages/company/CompanySearch';
@@ -53,6 +54,9 @@ import StudentMentorshipDashboard from './pages/mentorship/StudentMentorshipDash
 import CreateProgram from './pages/mentorship/CreateProgram';
 import ProgramContent from './pages/mentorship/ProgramContent';
 import AdminMentorshipManagement from './pages/mentorship/AdminMentorshipManagement';
+
+// Search Pages
+import UnifiedSearch from './pages/search/UnifiedSearch';
 
 
 function App() {
@@ -195,6 +199,14 @@ function App() {
                   </PrivateRoute>
                 }
               />
+              <Route
+                path="/search"
+                element={
+                  <PrivateRoute>
+                    <UnifiedSearch />
+                  </PrivateRoute>
+                }
+              />
 
               {/* Admin Routes */}
               <Route
@@ -293,6 +305,14 @@ function App() {
                 element={
                   <PrivateRoute roles={['employer', 'admin']}>
                     <ManageCompanyApplications />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/employer/company-profile/create"
+                element={
+                  <PrivateRoute roles={['employer', 'admin']}>
+                    <CreateCompanyProfile />
                   </PrivateRoute>
                 }
               />

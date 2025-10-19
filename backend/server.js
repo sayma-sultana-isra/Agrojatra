@@ -21,6 +21,8 @@ import roadmapRoutes from './routes/roadmapRoutes.js';
 import companyRoutes from './routes/companyRoutes.js';
 import companyApplicationRoutes from './routes/companyApplicationRoutes.js';
 import mentorshipRoutes from './routes/mentorshipRoutes.js';
+import companyProfileRoutes from './routes/companyProfileRoutes.js';
+import searchRoutes from './routes/searchRoutes.js';
 
 dotenv.config();
 
@@ -97,6 +99,8 @@ app.use('/api/roadmaps', roadmapRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/company-applications', companyApplicationRoutes);
 app.use('/api/mentorship', mentorshipRoutes);
+app.use('/api/company-profiles', companyProfileRoutes);
+app.use('/api/search', searchRoutes);
 
 // Health check route
 app.get('/', (req, res) => {
