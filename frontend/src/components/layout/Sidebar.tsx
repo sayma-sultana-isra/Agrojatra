@@ -48,65 +48,39 @@ const Sidebar: React.FC = () => {
           { icon: User, label: 'My Profile', path: '/profile' },
           { icon: UserPlus, label: 'Network', path: '/network' },
           { icon: Briefcase, label: 'Job Search', path: '/jobs/search' },
-          { icon: FileText, label: 'My Applications', path: '/applications' },
-          { icon: Building, label: 'Company Applications', path: '/company-applications' },
-          { icon: CalendarDays, label: 'Events', path: '/events' },
           { icon: Building, label: 'Companies', path: '/companies' },
-          { icon: GraduationCap, label: 'Mentorship', path: '/mentorship/student' },
-          
-          { icon: MapPin, label: 'Career Roadmap', path: '/roadmap' },
-          
-          
-          
-          { icon: Bell, label: 'Notifications', path: '/notifications' },
-          
-        ];
-
-      case 'employer':
-        return [
-          { icon: MessageSquare, label: 'Feed', path: '/dashboard' },
-          
-          
-          { icon: PlusCircle, label: 'Post a Job', path: '/jobs/create' },
-          { icon: List, label: 'My Job Listings', path: '/jobs/manage' },
-          { icon: Users, label: 'Applicants', path: '/applications/manage' },
+          { icon: FileText, label: 'Applications', path: '/applications' },
           { icon: CalendarDays, label: 'Events', path: '/events' },
-          { icon: Building, label: 'My Companies', path: '/companies/manage' },
-          { icon: Users, label: 'Company Applications', path: '/companies/applications' },
-          { icon: Search, label: 'Browse Companies', path: '/companies' },
-          
-          
-          
-          { icon: Bell, label: 'Notifications', path: '/notifications' }
-         
+          { icon: GraduationCap, label: 'Mentorship', path: '/mentorship/student' },
+          { icon: Target, label: 'Career Roadmaps', path: '/roadmaps' }
         ];
-
       case 'alumni':
         return [
           { icon: MessageSquare, label: 'Feed', path: '/dashboard' },
           { icon: User, label: 'My Profile', path: '/profile' },
-          
-          { icon: CalendarDays, label: 'Events & Meetups', path: '/events' },
-          { icon: Building, label: 'Companies', path: '/companies' },
-          { icon: GraduationCap, label: 'Mentorship', path: '/mentorship/alumni' },
-          
-          
-          
-          { icon: Bell, label: 'Notifications', path: '/notifications' }
-          
+          { icon: UserPlus, label: 'Network', path: '/network' },
+          { icon: Briefcase, label: 'Job Search', path: '/jobs/search' },
+          { icon: GraduationCap, label: 'Mentorship Panel', path: '/mentorship/alumni' }
         ];
-
+      case 'employer':
+        return [
+            { icon: Home, label: 'Dashboard', path: '/dashboard' },
+            { icon: PlusCircle, label: 'Post a Job', path: '/jobs/create' },
+            { icon: List, label: 'Manage Jobs', path: '/jobs/manage' },
+            { icon: Users, label: 'Applications', path: '/applications/manage' },
+            { icon: Building, label: 'My Companies', path: '/companies/manage' },
+            { icon: Calendar, label: 'Manage Events', path: '/events/manage' },
+            { icon: User, label: 'My Profile', path: '/profile' }
+        ];
       case 'admin':
         return [
-          { icon: Home, label: 'Dashboard', path: '/dashboard' },
+          { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
           { icon: Users, label: 'Manage Users', path: '/admin/users' },
           { icon: Briefcase, label: 'Manage Jobs', path: '/admin/jobs' },
-          { icon: GraduationCap, label: 'Manage Mentorship', path: '/mentorship/admin' },
-          { icon: CalendarDays,  label: 'Manage Events' , path: '/admin/events' },
-          { icon: Target, label: 'Career Roadmaps', path: '/admin/roadmaps' }
-          
-          
-          
+          { icon: Building, label: 'Manage Companies', path: '/admin/companies' },
+          { icon: CalendarDays, label: 'Manage Events', path: '/admin/events' },
+          { icon: GraduationCap, label: 'Mentorships', path: '/admin/mentorships' },
+          { icon: Target, label: 'Manage Roadmaps', path: '/admin/roadmaps' }
         ];
 
       default:
@@ -119,6 +93,8 @@ const Sidebar: React.FC = () => {
   return (
     <div className="w-64 bg-white shadow-sm border-r border-gray-200 h-full">
       <div className="p-6">
+        {/* THIS BLOCK WAS REMOVED */}
+        {/*
         <div className="flex items-center space-x-3 mb-8">
           <div className="bg-blue-600 p-2 rounded-lg">
             <Briefcase className="h-6 w-6 text-white" />
@@ -128,6 +104,7 @@ const Sidebar: React.FC = () => {
             <p className="text-xs text-gray-500 capitalize">{user?.role} Panel</p>
           </div>
         </div>
+        */}
 
         <nav className="space-y-1">
           {menuItems.map((item) => {
