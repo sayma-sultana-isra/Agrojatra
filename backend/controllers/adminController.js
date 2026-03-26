@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import User from '../models/user.js';
 import Job from '../models/Job.js';
 import Application from '../models/Application.js';
 import Event from '../models/Event.js';
